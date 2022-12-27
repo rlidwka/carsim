@@ -5,15 +5,44 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "(Windows) Launch",
-            "type": "cppvsdbg",
+            "type": "lldb",
             "request": "launch",
-            "program": "${workspaceFolder}/target/debug/carsim.exe",
+            "name": "Debug executable 'spacebevy'",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--bin=spacebevy",
+                    "--package=spacebevy"
+                ],
+                "filter": {
+                    "name": "spacebevy",
+                    "kind": "bin"
+                }
+            },
             "args": [],
-            "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
-            "environment": [],
-            "preLaunchTask": "rust: cargo build",
+            "env": {
+                "LD_LIBRARY_PATH": "${LD_LIBRARY_PATH}:${workspaceFolder}/target/debug/deps:/home/user/.rustup/toolchains/nightly-x86_64-unknown-linux-gnu/lib/"
+            }
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug unit tests in executable 'spacebevy'",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--bin=spacebevy",
+                    "--package=spacebevy"
+                ],
+                "filter": {
+                    "name": "spacebevy",
+                    "kind": "bin"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
         }
     ]
 }

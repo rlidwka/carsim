@@ -6,3 +6,6 @@ edition = "2021"
 [dependencies]
 bevy = "0.9.1"
 bevy-inspector-egui = "0.15.0"
+bevy_infinite_grid = "0.6.0"
+chrono = "0.4.23"
+nalgebra = "0.31.4"

@@ -8,7 +8,7 @@
             "name": "(Windows) Launch",
             "type": "cppvsdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/target/debug/spacestuffs.exe",
+            "program": "${workspaceFolder}/target/debug/carsim.exe",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",

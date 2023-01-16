@@ -1,0 +1,12 @@
+[package]
+name = "physxbevy"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+bevy = "0.9.1"
+bevy-inspector-egui = "0.16.6"
+derive_more = { version = "0.99.17", features = ["deref", "deref_mut"] }
+once_cell = "1.17.0"
+physx = "0.16.0"
+physx-sys = "0.8.1"

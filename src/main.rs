@@ -117,50 +117,37 @@ fn spawn_stack(
                 });
         }
     }
-/*
-
-
-	PxShape* shape = gPhysics->createShape(PxBoxGeometry(halfExtent, halfExtent, halfExtent), *gMaterial);
-	for(PxU32 i=0; i<size;i++)
-	{
-		for(PxU32 j=0;j<size-i;j++)
-		{
-			PxTransform localTm(PxVec3(PxReal(j*2) - PxReal(size-i), PxReal(i*2+1), 0) * halfExtent);
-			PxRigidDynamic* body = gPhysics->createRigidDynamic(t.transform(localTm));
-			body->attachShape(*shape);
-			PxRigidBodyExt::updateMassAndInertia(*body, 10.0f);
-			gScene->addActor(*body);
-		}
-	}
-	shape->release();
-
-
-
-    commands.spawn_empty()
-    .insert(PbrBundle {
-        mesh: meshes.add(Mesh::from(shape::Cube { size: 1.0 })),
-        material: materials.add(Color::rgb(0.8, 0.7, 0.6).into()),
-        transform: Transform::from_xyz(0.0, -1.5, 0.0),
-        ..default()
-    })
-    .insert(bevy_physx::BPxRigidDynamic {
-        ..default()
-    })
-    .insert(bevy_rapier3d::prelude::RigidBody::Dynamic);
-
-commands.spawn_empty()
-    .insert(PbrBundle {
-        mesh: meshes.add(Mesh::from(shape::Cube { size: 1.0 })),
-        material: materials.add(Color::rgb(0.8, 0.7, 0.6).into()),
-        transform: Transform::from_xyz(0.0, 0.5, 0.0),
-        ..default()
-    })
-    .insert(bevy_physx::BPxRigidDynamic {
-        ..default()
-    })
-    .insert(bevy_rapier3d::prelude::RigidBody::Dynamic);
-*/
 }
 
-fn spawn_dynamic(mut commands: Commands) {
+fn spawn_dynamic(
+    mut commands: Commands,
+    mut meshes: ResMut<Assets<Mesh>>,
+    mut materials: ResMut<Assets<StandardMaterial>>,
+    mut physics: ResMut<BPxPhysics>,
+    mut px_geometries: ResMut<Assets<BPxGeometry>>,
+    mut px_materials: ResMut<Assets<BPxMaterial>>,
+) {
+    const RADIUS: f32 = 1.25;
+
+    let mesh = meshes.add(Mesh::from(shape::UVSphere { radius: 1.25, ..default() }));
+    let material = materials.add(Color::rgb(0.8, 0.7, 0.6).into());
+
+    let px_geometry = px_geometries.add(PxSphereGeometry::new(RADIUS).into());
+    let px_material = px_materials.add(physics.create_material(0.5, 0.5, 0.6, ()).unwrap().into());
+
+    let transform = Transform::from_translation(Vec3::new(0., 5., 12.5));
+
+    commands.spawn_empty()
+        .insert(PbrBundle {
+            mesh: mesh.clone(),
+            material: material.clone(),
+            transform,
+            ..default()
+        })
+        .insert(BPxRigidDynamic {
+            material: px_material.clone(),
+            geometry: px_geometry.clone(),
+            density: 10.,
+            ..default()
+        });
 }

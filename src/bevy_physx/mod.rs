@@ -76,8 +76,15 @@ impl Plugin for BPxPlugin {
         // physics must be last (so it will be dropped last)
         app.insert_resource(BPxPhysics { physics, vsdk: self.vehicles });
 
-        app.add_system(systems::scene_simulate);
-        app.add_system(systems::create_dynamic_actors);
+        #[derive(Debug, StageLabel)]
+        struct PhysXStage;
+
+        let mut stage = SystemStage::parallel();
+        stage.add_system(systems::scene_simulate);
+        stage.add_system(systems::create_dynamic_actors.after(systems::scene_simulate));
+        stage.add_system(systems::writeback_actors.after(systems::scene_simulate));
+
+        app.add_stage_after(CoreStage::Update, PhysXStage, stage);
     }
 }
 
@@ -132,28 +139,6 @@ pub struct BPxRigidDynamic {
     pub material: Handle<BPxMaterial>,
     pub density: f32,
     pub shape_transform: Transform,
-
-/*
-
-        geometry(radius)
-        material(st,dy,rest)
-        transform
-        density
-        shape_transform
-
-        let sphere_geo = PxSphereGeometry::new(10.0);
-        let mut material:Owner<physx::material::PxMaterial<()>> = physics.create_material(0.5, 0.5, 0.6, ()).unwrap();
-        let mut sphere_actor = physics
-            .create_rigid_dynamic(
-                PxTransform::from_translation(&PxVec3::new(0.0, 40.0, 100.0)),
-                &sphere_geo,
-                material.as_mut(),
-                10.0,
-                PxTransform::default(),
-                (),
-            )
-            .unwrap();
-        scene.add_dynamic_actor(sphere_actor);*/
 }
 
 impl Default for BPxRigidDynamic {
